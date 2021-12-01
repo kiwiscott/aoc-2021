@@ -33,15 +33,11 @@ public class Day1
     }
     public static int Part2(List<int> data)
     {
-        var ints = data;
-
-
-        //1715 is right
         var increase = 0;
-        for (int i = 3; i < ints.Count(); i++)
+        for (int i = 3; i < data.Count(); i++)
         {
-            var prev = ints[i - 3] + ints[i - 2] + ints[i - 1];
-            var curr = ints[i - 2] + ints[i - 1] + ints[i];
+            var prev = data[i - 3] + data[i - 2] + data[i - 1];
+            var curr = data[i - 2] + data[i - 1] + data[i];
             if (curr > prev) { increase += 1; };
         }
         return increase;
