@@ -5,7 +5,7 @@ using System.Reflection;
 namespace aoc;
 public static class Lib
 {
-    public static List<T> Load<T>(string path, Func<string?, T> process) where T : IConvertible
+    public static List<T> Load<T>(string path, Func<string?, T> process)
     {
         var l = new List<T>();
 
@@ -24,7 +24,7 @@ public static class Lib
 
     internal static Tuple<string, bool, bool> ProcessArgs(string[] args)
     {
-        string typeName = "aoc.Days.Day" + DateTime.UtcNow.Day;
+        string typeName = "aoc.Days.Day" + DateTime.Now.Day;
         bool runPart1 = true;
         bool runPart2 = true;
 

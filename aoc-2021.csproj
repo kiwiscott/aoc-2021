@@ -5,6 +5,7 @@
 <RootNamespace>aoc_2021</RootNamespace>
 <ImplicitUsings>enable</ImplicitUsings>
 <Nullable>enable</Nullable>
+<DisabledWarnings>7022</DisabledWarnings>
 </PropertyGroup>
 <ItemGroup>
 <PackageReference Include="Microsoft.NET.Test.Sdk"
