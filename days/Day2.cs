@@ -39,26 +39,13 @@ public class Day2
 
     public static int Part1(List<Command> data)
     {
-        var depth = 0;
-        var horizontal_position = 0;
+        var g = data.GroupBy(
+            item => item.direction, 
+            item => item.steps, 
+            (direction,steps) => new {Key = direction, Sum = steps.Sum()} 
+        ).ToDictionary(k => k.Key);
 
-        foreach (var item in data)
-        {
-            switch (item.direction)
-            {
-                case Direction.Down:
-                    depth = depth + item.steps;
-                    break;
-                case Direction.Up:
-                    depth = depth - item.steps;
-                    break;
-                case Direction.Forward:
-                    horizontal_position = horizontal_position + item.steps;
-                    break;
-            }
-        }
-
-        return depth * horizontal_position;
+        return (g[Direction.Down].Sum -  g[Direction.Up].Sum) *  g[Direction.Forward].Sum;
     }
     public static int Part2(List<Command> data)
     {
