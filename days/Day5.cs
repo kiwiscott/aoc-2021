@@ -3,9 +3,6 @@ namespace aoc.Days;
 
 public class Day5
 {
-    public record struct Point(int x, int y);
-    public record struct EndPoint(Point start, Point end);
-
     public static List<EndPoint> Data(string path)
     {
         var parse = delegate (string? s)
@@ -29,61 +26,38 @@ public class Day5
     }
     public static int Part1(List<EndPoint> data)
     {
-        var allPoints = data.Select(ep => AllPoints(ep, false))
+        return data.Select(ep => ep.AllPoints(includeDiagonal: false))
             .Aggregate(new List<Point>(), (l, points) => { l.AddRange(points); return l; })
-            .GroupBy(p => (p.x, p.y))
-            .Where(p => p.Count() > 1);
-
-
-
-        return allPoints.Count();
-
+            .GroupBy(p=>p)
+            .Count(p => p.Count() > 1);
     }
     public static int Part2(List<EndPoint> data)
     {
-
-        var allPoints = data.Select(ep => AllPoints(ep, true))
-           .Aggregate(new List<Point>(), (l, points) => { l.AddRange(points); return l; })
-           .GroupBy(p => (p.x, p.y))
-           .Where(p => p.Count() > 1);
-
-        return allPoints.Count();
+        return data.Select(ep => ep.AllPoints(includeDiagonal: true))
+            .Aggregate(new List<Point>(), (l, points) => { l.AddRange(points); return l; })
+            .GroupBy(p => p)
+            .Count(p => p.Count() > 1);
     }
 
-    public static IEnumerable<Point> AllPoints(EndPoint ep, bool includeDiagonal)
+    public record struct Point(int x, int y);
+
+    public record struct EndPoint(Point Start, Point End)
     {
-        //Horizontal or Vertical 
-        if (ep.start.y == ep.end.y)
+        public IEnumerable<Point> AllPoints(bool includeDiagonal)
         {
-            //Horizontal
-            var sorted = (ep.start.x < ep.end.x) ? (ep.start.x, ep.end.x) : (ep.end.x, ep.start.x);
-            for (int i = sorted.Item1; i <= sorted.Item2; i++)
-            {
-                yield return new Point(i, ep.start.y);
-            }
-        }
-        else if (ep.start.x == ep.end.x)
-        {
-            //Vertical 
-            var sorted = (ep.start.y < ep.end.y) ? (ep.start.y, ep.end.y) : (ep.end.y, ep.start.y);
-            for (int i = sorted.Item1; i <= sorted.Item2; i++)
-            {
-                yield return new Point(ep.start.x, i);
-            }
-        }
-        else if (includeDiagonal)
-        {
-            //Always start at the lowest x...... 
-            var topPoint = (ep.start.x < ep.end.x) ? ep.start : ep.end;
-            var bottomPoint = (ep.start.x > ep.end.x) ? ep.start : ep.end;
-            var goingLeft = topPoint.y > bottomPoint.y; //number plus
+            if (!includeDiagonal && !(Start.y == End.y || End.x == Start.x))
+                yield break;
 
-            for (int i = topPoint.x; i <= bottomPoint.x; i++)
+
+            //Number of Steps 
+            var steps = Math.Max(Math.Abs(Start.x - End.x), Math.Abs(Start.y - End.y));
+
+            for (int i = 0; i <= steps; i++)
             {
-                var currentY = goingLeft ? topPoint.y + (topPoint.x - i) : topPoint.y - (topPoint.x - i);
-                yield return new Point(i, currentY);
+                var x = Start.x == End.x ? Start.x : (Start.x < End.x ? Start.x + i : Start.x - i);
+                var y = Start.y == End.y ? Start.y : (Start.y < End.y ? Start.y + i : Start.y - i);
+                yield return new Point(x, y);
             }
         }
-
     }
 }
