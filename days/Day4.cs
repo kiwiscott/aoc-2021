@@ -67,7 +67,6 @@ public class Day4
 
         if (b != null)
         {
-            Console.WriteLine("Winner");
             return b.Unmarked().Sum() * data.LastNumber;
         }
 
@@ -83,7 +82,6 @@ public class Day4
 
         if (b != null)
         {
-            Console.WriteLine("Winner");
             return b.Unmarked().Sum() * data.LastNumber;
         }
 
