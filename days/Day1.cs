@@ -5,13 +5,7 @@ public class Day1
 {
     public static List<int> Data(string file)
     {
-        Func<string?, int> convert = delegate (string? s)
-        {
-
-            return int.Parse(s ?? "0");
-        };
-
-        var ints = Lib.Load<int>(file, convert);
+        var ints = Lib.LoadList<int>(file, (string? s) => int.Parse(s ?? "0"));
         return ints;
     }
 

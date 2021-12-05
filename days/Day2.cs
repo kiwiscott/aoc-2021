@@ -12,7 +12,6 @@ public class Day2
 
             switch (parts[0])
             {
-
                 case "forward":
                     x = Direction.Forward;
                     break;
@@ -30,7 +29,7 @@ public class Day2
         };
 
 
-        var d = Lib.Load<Command>(file, convert);
+        var d = Lib.LoadList<Command>(file, convert);
         return d;
     }
 

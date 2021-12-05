@@ -5,7 +5,7 @@ public class Day3
 {
     public static object Data(string file)
     {
-        var d = Lib.Load<BitArray>(file, convert);
+        var d = Lib.LoadList<BitArray>(file,  convert);
         return d;
     }
     public static Func<string?, BitArray> convert = delegate (string? s)

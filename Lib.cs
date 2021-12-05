@@ -5,7 +5,7 @@ using System.Reflection;
 namespace aoc;
 public static class Lib
 {
-    public static List<T> Load<T>(string path, Func<string?, T> process)
+    public static List<T> LoadList<T>(string path, Func<string?, T> process)
     {
         var l = new List<T>();
 
@@ -20,6 +20,21 @@ public static class Lib
         }
         return l;
     }
+    public static List<string> LoadFile(string path)
+    {
+        var l = new List<string>();
+
+        // Open the file to read from.
+        using (StreamReader sr = File.OpenText(path))
+        {
+            string? s;
+            while ((s = sr.ReadLine()) != null)
+            {
+                l.Add(s);
+            }
+        }
+        return l;
+    }
 
 
     internal static Tuple<string, bool, bool> ProcessArgs(string[] args)
@@ -30,14 +45,14 @@ public static class Lib
 
         for (int i = 0; i < args.Length; i++)
         {
-            if (args[i] == "-p" && args.GetValue(i + 1) is not null)
+            if (args[i] == "-part" && args.GetValue(i + 1) is not null)
             {
                 runPart1 = args[i + 1] == "1";
                 runPart2 = args[i + 1] == "2";
             }
-            else if (args[i] == "-d" && args.GetValue(i + 1) is not null)
+            else if (args[i] == "-day" && args.GetValue(i + 1) is not null)
             {
-                typeName = "aoc.Days." + args[0];
+                typeName = "aoc.Days.Day" + args[i+1];
             }
         }
         return Tuple.Create(typeName, runPart1, runPart2);
