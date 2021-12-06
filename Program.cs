@@ -4,19 +4,17 @@ if (typeName == "ALL")
 {
     for (int i = 1; i <= 25; i++)
     {
-        aoc.Lib.RunMethod("aoc.Days.Day" + i, "Part1", true);
-        aoc.Lib.RunMethod("aoc.Days.Day" + i, "Part2", true);
+        RunMethod("aoc.Days.Day" + i, "Part1", true);
+        RunMethod("aoc.Days.Day" + i, "Part2", true);
     }
 }
 else
 {
-
     if (p1)
-        aoc.Lib.RunMethod(typeName, "Part1");
+        RunMethod(typeName, "Part1");
 
     if (p2)
-        aoc.Lib.RunMethod(typeName, "Part2");
-
+        RunMethod(typeName, "Part2");
 }
 
 
@@ -55,7 +53,7 @@ static bool RunMethod(string type, string method, bool silent = false)
     if (t is null)
     {
         if (!silent) { Console.WriteLine("Type {0} not found", type); }
-        return false; 
+        return false;
     }
 
     var constr = t.GetConstructor(System.Type.EmptyTypes);
@@ -78,7 +76,7 @@ static bool RunMethod(string type, string method, bool silent = false)
     {
 
         Console.WriteLine("{0}: Missing Data Function", t.Name);
-        return false; 
+        return false;
     }
 
     if (data is null)
@@ -98,12 +96,12 @@ static bool RunMethod(string type, string method, bool silent = false)
         var result = builderMethod.Invoke(o, new object[] { data });
         watch.Stop();
         Console.WriteLine("{0}.{1} : {2} in {3}ms", t.Name, method, result, watch.ElapsedMilliseconds);
-        return true; 
+        return true;
     }
     else
     {
         Console.WriteLine("{0}.{1} : Missing", t.Name, method);
-        return false; 
+        return false;
     }
 
 }
