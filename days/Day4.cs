@@ -1,4 +1,3 @@
-using System.Collections;
 namespace aoc.Days;
 
 class Day4

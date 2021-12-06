@@ -8,7 +8,7 @@ class Day3
         var d = Lib.LoadList<BitArray>(file,  Convert);
         return d;
     }
-    public Func<string?, BitArray> Convert = delegate (string? s)
+    public Func<string, BitArray> Convert = delegate (string s)
     {
         var parts = s.ToCharArray().Select(p => p == '1').ToArray();
         return new BitArray(parts);

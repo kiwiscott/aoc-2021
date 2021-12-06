@@ -1,11 +1,10 @@
-using System.Collections;
 namespace aoc.Days;
 
 class Day5
 {
     public List<EndPoint> Data(string path)
     {
-        var parse = delegate (string? s)
+        var parse = delegate (string s)
         {
             var parts = s.Split(" -> ");
             var p1 = parts[0].Split(",");

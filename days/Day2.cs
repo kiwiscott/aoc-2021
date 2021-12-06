@@ -5,7 +5,7 @@ class Day2
 {
     public List<Command> Data(string file)
     {
-        Func<string?, Command> convert = delegate (string? s)
+        Func<string, Command> convert = delegate (string s)
         {
             var parts = s.Split(" ");
             var x = Direction.Forward;

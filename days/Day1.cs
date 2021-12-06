@@ -5,7 +5,7 @@ class Day1
 {
     public List<int> Data(string file)
     {
-        var ints = Lib.LoadList<int>(file, (string? s) => int.Parse(s ?? "0"));
+        var ints = Lib.LoadList<int>(file, (string s) => int.Parse(s));
         return ints;
     }
 

@@ -51,6 +51,7 @@ public class Day5Test
         Assert.Equal(5, points[5].y);
     }
 
+    [Fact]
     public void DiagonalPointRight()
     {
         var ep = new Day5.EndPoint(new Day5.Point(3, 3), new Day5.Point(1, 1));
@@ -66,20 +67,22 @@ public class Day5Test
         Assert.Equal(1, points[2].x);
         Assert.Equal(1, points[2].y);
     }
+
+    [Fact]
     public void DiagonalPointRightFlippeDPointOrder()
     {
         var ep = new Day5.EndPoint(new Day5.Point(1, 1), new Day5.Point(3, 3));
         var points = ep.AllPoints(true).ToArray();
         Assert.Equal(3, points.Count());
 
-        Assert.Equal(3, points[0].x);
-        Assert.Equal(3, points[0].y);
+        Assert.Equal(1, points[0].x);
+        Assert.Equal(1, points[0].y);
 
         Assert.Equal(2, points[1].x);
         Assert.Equal(2, points[1].y);
 
-        Assert.Equal(1, points[2].x);
-        Assert.Equal(1, points[2].y);
+        Assert.Equal(3, points[2].x);
+        Assert.Equal(3, points[2].y);
     }
 
 
