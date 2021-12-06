@@ -1,16 +1,14 @@
 using Xunit;
+using aoc.Days; 
 
-public class Day1
+public class Day1Test
 {
     [Fact]
     public void Test1()
     {
-        List<int> i = new List<int>();
-        i.Add(1);
-        i.Add(2);
-        i.Add(1);
-
-        var r = aoc.Days.Day1.Part1(i);
+        Day1 d = new Day1(); 
+        var i = new List<int>() {1,2,1}; 
+        var r = d.Part1(i);
         Assert.Equal(1, r);
     }
 }

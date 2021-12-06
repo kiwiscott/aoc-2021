@@ -1,9 +1,9 @@
 
 namespace aoc.Days;
 
-public class Day2
+class Day2
 {
-    public static object Data(string file)
+    public List<Command> Data(string file)
     {
         Func<string?, Command> convert = delegate (string? s)
         {
@@ -36,7 +36,7 @@ public class Day2
     public record struct Command(Direction direction, int steps);
     public enum Direction { Forward, Down, Up }
 
-    public static int Part1(List<Command> data)
+    public int Part1(List<Command> data)
     {
         var g = data.GroupBy(
             item => item.direction, 
@@ -46,7 +46,7 @@ public class Day2
 
         return (g[Direction.Down].Sum -  g[Direction.Up].Sum) *  g[Direction.Forward].Sum;
     }
-    public static int Part2(List<Command> data)
+    public int Part2(List<Command> data)
     {
         /*
         down X increases your aim by X units.

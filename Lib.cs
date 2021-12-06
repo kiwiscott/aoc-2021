@@ -40,6 +40,7 @@ public static class Lib
     internal static Tuple<string, bool, bool> ProcessArgs(string[] args)
     {
         string typeName = "aoc.Days.Day" + DateTime.Now.Day;
+
         bool runPart1 = true;
         bool runPart2 = true;
 
@@ -69,13 +70,16 @@ public static class Lib
             return;
         }
 
+        var constr = t.GetConstructor(System.Type.EmptyTypes); 
+        var o = constr.Invoke(null); 
+
         object? data = null;
 
-        var dataMethod = t.GetMethod("Data", BindingFlags.Static | BindingFlags.Public);
+        var dataMethod = t.GetMethod("Data");
         if (dataMethod is not null)
         {
             string filename = String.Format(@"data/{0}.txt", t.Name.ToLower());
-            data = dataMethod.Invoke(null, new object[] { filename });
+            data = dataMethod.Invoke(o, new object[] { filename });
         }
         else
         {
@@ -85,16 +89,16 @@ public static class Lib
         }
 
 
-        var builderMethod = t.GetMethod(method, BindingFlags.Static | BindingFlags.Public);
+        var builderMethod = t.GetMethod(method);
 
         if (builderMethod is not null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
 
-            var o = builderMethod.Invoke(null, new object[] { data });
+            var result = builderMethod.Invoke(o, new object[] { data });
             watch.Stop();
-            Console.WriteLine("{0}.{1} : {2} in {3}ms", t.Name, method, o, watch.ElapsedMilliseconds);
+            Console.WriteLine("{0}.{1} : {2} in {3}ms", t.Name, method, result, watch.ElapsedMilliseconds);
         }
         else
         {

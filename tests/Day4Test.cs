@@ -29,27 +29,22 @@ public class Day4Test
     [Fact]
     public void Test1()
     {
+        Day4 d = new Day4(); 
         var data = TestData();
 
-        var bingo = Day4.Process(data);
+        var bingo = d.Process(data);
         Assert.Equal(3, bingo.Boards.Count());
 
-        var result = Day4.Part1(bingo);
+        var result = d.Part1(bingo);
         Assert.Equal(4512, result);
     }
     [Fact]
     public void TestSecondColumn()
     {
-        /*
-        "14 21 17 24  4",
-        "10 16 15  9 19",
-        "18  8 23 26 20",
-        "22 11 13  6  5",
-        "2  0 12  3  7",
-        */
+        Day4 d = new Day4(); 
         var data = TestData();
 
-        var bingo = Day4.Process(data);
+        var bingo = d.Process(data);
         var w = bingo.PlayRound(21);
         Assert.Null(w);
 
@@ -71,16 +66,10 @@ public class Day4Test
     [Fact]
     public void TestLastRow()
     {
-        /*
-        "14 21 17 24  4",
-        "10 16 15  9 19",
-        "18  8 23 26 20",
-        "22 11 13  6  5",
-        "2  0 12  3  7",
-        */
+        Day4 d = new Day4(); 
         var data = TestData();
 
-        var bingo = Day4.Process(data);
+        var bingo = d.Process(data);
         var w = bingo.PlayRound(2);
         Assert.Null(w);
 

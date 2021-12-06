@@ -1,21 +1,21 @@
 using System.Collections;
 namespace aoc.Days;
 
-public class Day3
+class Day3
 {
-    public static object Data(string file)
+    public object Data(string file)
     {
-        var d = Lib.LoadList<BitArray>(file,  convert);
+        var d = Lib.LoadList<BitArray>(file,  Convert);
         return d;
     }
-    public static Func<string?, BitArray> convert = delegate (string? s)
+    public Func<string?, BitArray> Convert = delegate (string? s)
     {
         var parts = s.ToCharArray().Select(p => p == '1').ToArray();
         return new BitArray(parts);
     };
 
 
-    public static int Part1(List<BitArray> data)
+    public int Part1(List<BitArray> data)
     {
         //Whats the length of the BitArrays
         var gamma_array = new BitArray(data[0].Length);
@@ -33,7 +33,7 @@ public class Day3
 
         return gamma_rate * epsilon_rate;
     }
-    public static int Part2(List<BitArray> data)
+    public int Part2(List<BitArray> data)
     {
         var ogr_ba = find_one(data, true);
         var oxygen_generator_rating = bits_to_int(ogr_ba);
@@ -44,7 +44,7 @@ public class Day3
         return co2_scrubber_rating * oxygen_generator_rating;
     }
 
-    static string bits_to_string(BitArray ba)
+    private string bits_to_string(BitArray ba)
     {
 
         var s = "";
@@ -54,13 +54,13 @@ public class Day3
         }
         return s;
     }
-    static int bits_to_int(BitArray ba)
+    private int bits_to_int(BitArray ba)
     {
         var s = bits_to_string(ba);
-        return Convert.ToInt32(s, 2);
+        return System.Convert.ToInt32(s, 2);
     }
 
-    static BitArray find_one(List<BitArray> data, bool msb)
+    private BitArray find_one(List<BitArray> data, bool msb)
     {
         var dcurrent = data.ToList();
         var current_index = 0;

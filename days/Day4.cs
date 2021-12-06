@@ -1,14 +1,14 @@
 using System.Collections;
 namespace aoc.Days;
 
-public class Day4
+class Day4
 {
-    public static Bingo Data(string path)
+    public Bingo Data(string path)
     {
         var data = Lib.LoadFile(path);
         return Process(data);
     }
-    public static Bingo Process(List<string> lines)
+    public Bingo Process(List<string> lines)
     {
         Bingo b = new Bingo();
         b.NumbersToPlay = lines.First().Split(",").Select(p => int.Parse(p)).ToList();
@@ -61,7 +61,7 @@ public class Day4
 
         return b;
     }
-    public static int Part1(Bingo data)
+    public int Part1(Bingo data)
     {
         var b = data.PlayTillWinner();
 
@@ -72,7 +72,7 @@ public class Day4
 
         return 0;
     }
-    public static int Part2(Bingo data)
+    public int Part2(Bingo data)
     {
         var b = data.PlayTillWinner();
         while (data.ActiveBoards().Count() > 0)
@@ -165,7 +165,7 @@ public class Day4
             }
         }
 
-        internal bool Mark(int number)
+        public bool Mark(int number)
         {
             bool marked = false;
             for (int i = 0; i < 5; i++)

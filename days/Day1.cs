@@ -1,15 +1,15 @@
 
 namespace aoc.Days;
 
-public class Day1
+class Day1
 {
-    public static List<int> Data(string file)
+    public List<int> Data(string file)
     {
         var ints = Lib.LoadList<int>(file, (string? s) => int.Parse(s ?? "0"));
         return ints;
     }
 
-    public static int Part1(List<int> data)
+    public int Part1(List<int> data)
     {
         var ints = data;
 
@@ -25,7 +25,7 @@ public class Day1
         return increase;
 
     }
-    public static int Part2(List<int> data)
+    public int Part2(List<int> data)
     {
         var increase = 0;
         for (int i = 3; i < data.Count(); i++)

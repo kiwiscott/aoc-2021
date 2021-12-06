@@ -1,9 +1,9 @@
 using System.Collections;
 namespace aoc.Days;
 
-public class Day5
+class Day5
 {
-    public static List<EndPoint> Data(string path)
+    public List<EndPoint> Data(string path)
     {
         var parse = delegate (string? s)
         {
@@ -24,14 +24,14 @@ public class Day5
         var d = Lib.LoadList(path, parse);
         return d;
     }
-    public static int Part1(List<EndPoint> data)
+    public int Part1(List<EndPoint> data)
     {
         return data.Select(ep => ep.AllPoints(includeDiagonal: false))
             .Aggregate(new List<Point>(), (l, points) => { l.AddRange(points); return l; })
             .GroupBy(p=>p)
             .Count(p => p.Count() > 1);
     }
-    public static int Part2(List<EndPoint> data)
+    public int Part2(List<EndPoint> data)
     {
         return data.Select(ep => ep.AllPoints(includeDiagonal: true))
             .Aggregate(new List<Point>(), (l, points) => { l.AddRange(points); return l; })
