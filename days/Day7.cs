@@ -27,13 +27,11 @@ class Day7
     }
     public int Part2(SortedDictionary<int, int> crabs)
     {
-        var i = Enumerable.Range(0,  crabs.Keys.Max()).Min(value => crabs.Select(kv =>
-        {
-            var gap = Convert.ToDouble(Math.Abs(kv.Key - value));
-            var cost_for_one = gap * ((gap + 1.0) / 2.0);
-            return cost_for_one * kv.Value;
-        }).Sum());
-
-        return Convert.ToInt32(i);
+        return Enumerable.Range(0, crabs.Keys.Max()).Min(value => crabs.Select(kv =>
+       {
+           var gap = Convert.ToDouble(Math.Abs(kv.Key - value));
+           var cost_for_one = gap * ((gap + 1.0) / 2.0);
+           return Convert.ToInt32(cost_for_one * kv.Value);
+       }).Sum());
     }
 }
