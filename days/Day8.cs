@@ -8,30 +8,13 @@ class Day8
     {
         return Lib.LoadList(path, (s) =>
         {
-            bool processing_input = true;
-            var input = new List<string>();
-            var output = new List<string>();
-
-            foreach (var spart in s.Split(" ", StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (spart == "|")
-                {
-                    processing_input = false;
-                }
-                else if (processing_input)
-                {
-                    input.Add(spart.ToCharArray().OrderBy(p => p).Aggregate("", (s, i) => { s += i; return s; }));
-                }
-                else
-                {
-                    output.Add(spart.ToCharArray().OrderBy(p => p).Aggregate("", (s, i) => { s += i; return s; }));
-                };
-            }
-
-            return new SignalPattern(input, output);
+            var input = s.Split("|", StringSplitOptions.RemoveEmptyEntries).First().Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                .Select(i => i.ToCharArray().OrderBy(p => p).Aggregate("", (s, c) => { s += c; return s; }));
+            var output = s.Split("|", StringSplitOptions.RemoveEmptyEntries).Last().Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                .Select(i => i.ToCharArray().OrderBy(p => p).Aggregate("", (s, c) => { s += c; return s; }));
+            return new SignalPattern(input.ToList(), output.ToList());
         });
     }
-
 
 
     public int Part1(List<SignalPattern> patterns)
@@ -44,6 +27,7 @@ class Day8
         var result = patterns.Aggregate(0, (i, pattern) =>
         {
             var lookup = ProcessSignals(pattern);
+            //Collect the matched digits to a string and then change to an int 
             var collected = pattern.output.Aggregate("", (collector, s) => { collector += lookup[s]; return collector; });
             i += int.Parse(collected);
             return i;
@@ -54,20 +38,23 @@ class Day8
     private Dictionary<string, string> ProcessSignals(SignalPattern pattern)
     {
         /*
-       1 = item with 2
-       4 = item with 4
-       7 = item with 3
-       8 = item with 7
+        Given the list that we have for a basic rules we can figure out the values in the inputs by processing the number of 
+        letters in order and the known patterns of the first 4 constant numbers. e.g we know 9 is the only digit where all the letters of 4 are present. 
 
-       //
-       #9 - 6 and all digits of 4 
-       #0 - 6 all all digits of 1 and not 9
-       #6 - 6 and NOT 9 or 6 
-       //
-       3 - 5 and all digits of 7 
-       5 - 5 and all the letters in 5 are in 9 
-       2 - 5 and NOT 3 or 5 
-       */
+        1 = item with 2
+        4 = item with 4
+        7 = item with 3
+        8 = item with 7
+
+        //
+        #9 - 6 and all digits of 4 
+        #0 - 6 all all digits of 1 and not 9
+        #6 - 6 and NOT 9 or 6 
+        //
+        3 - 5 and all digits of 7 
+        5 - 5 and all the letters in 5 are in 9 
+        2 - 5 and NOT 3 or 5 
+        */
 
 
         //acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
@@ -75,14 +62,10 @@ class Day8
         var s4 = pattern.input.First(p => p.Length == 4);
         var s7 = pattern.input.First(p => p.Length == 3);
         var s8 = pattern.input.First(p => p.Length == 7);
-
         //Six Digits 
         var s9 = pattern.input.First(p => p.Length == 6 && s4.All(c => p.Contains(c)));
         var s0 = pattern.input.First(p => p.Length == 6 && p != s9 && s1.All(c => p.Contains(c)));
         var s6 = pattern.input.First(p => p.Length == 6 && p != s9 && p != s0);
-
-
-
         //5 Digits 
         var s3 = pattern.input.First(p => p.Length == 5 && s7.All(c => p.Contains(c)));
         var s5 = pattern.input.First(p => p.Length == 5 && p != s3 && 5 == s9.Count(c => p.Contains(c)));
