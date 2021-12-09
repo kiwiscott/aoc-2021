@@ -57,12 +57,17 @@ class Day8
         */
 
 
-        //acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
+        // #1 has a length of 2 
         var s1 = pattern.input.First(p => p.Length == 2);
+        // #4 has a length of 4 
         var s4 = pattern.input.First(p => p.Length == 4);
+        // #7 has a length of 3
         var s7 = pattern.input.First(p => p.Length == 3);
+        // #8 has a length of 7
         var s8 = pattern.input.First(p => p.Length == 7);
+
         //Six Digits 
+        // #9 has a length of 7 and all digits of #4
         var s9 = pattern.input.First(p => p.Length == 6 && s4.All(c => p.Contains(c)));
         var s0 = pattern.input.First(p => p.Length == 6 && p != s9 && s1.All(c => p.Contains(c)));
         var s6 = pattern.input.First(p => p.Length == 6 && p != s9 && p != s0);
