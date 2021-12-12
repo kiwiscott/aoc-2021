@@ -8,7 +8,40 @@ class Day11
     }
     public int Part1(int[,] data)
     {
-        return DoStep(data, 2);
+        var count = 100;
+        var flashes = 0;
+        while (count > 0)
+        {
+            count--;
+            var r = DoStep(data);
+            flashes += r.Item1;
+            data = r.Item2;
+        }
+
+        return flashes;
+    }
+    public long Part2(int[,] data)
+    {
+        var steps = 0;
+        while (!AllZeros(data))
+        {
+            steps += 1;
+            var r = DoStep(data);
+            data = r.Item2;
+
+        }
+        return steps;
+    }
+    bool AllZeros(int[,] data)
+    {
+        for (int y = 0; y < data.GetLength(0); y++)
+        {
+            for (int x = 0; x < data.GetLength(1); x++)
+            {
+                if (data[y, x] != 0) return false;
+            }
+        }
+        return true;
     }
 
     void Print(int[,] data)
@@ -27,45 +60,38 @@ class Day11
         }
     }
 
-    int DoStep(int[,] data, int steps)
+    (int, int[,]) DoStep(int[,] data)
     {
-        steps = steps - 1;
         var y_len = data.GetLength(0);
         var x_len = data.GetLength(1);
         var flashes = 0;
         var flash_again = false;
 
-        Console.WriteLine("[{0},{1}] n= {2}", y_len, x_len, data.Length);
-
-
-
         //Increment
         for (int y = 0; y < y_len; y++)
         {
-
             for (int x = 0; x < x_len; x++)
             {
                 data[y, x] += 1;
                 if (data[y, x] > 9) { flash_again = true; }
             }
         }
-
-
         while (flash_again)
         {
             flash_again = false;
-
 
             for (int y = 0; y < y_len; y++)
             {
                 for (int x = 0; x < x_len; x++)
                 {
+
                     if (data[y, x] > 9)
                     {
                         data[y, x] = 0;
                         flashes += 1;
 
-                        foreach (var (neighX, neighY) in Neighbours(y, x, y_len, x_len))
+
+                        foreach (var (neighY, neighX) in Neighbours(y, x, y_len, x_len))
                         {
                             switch (data[neighY, neighX])
                             {
@@ -85,18 +111,7 @@ class Day11
                 }
             }
         }
-
-
-        Print(data);
-
-
-        if (steps > 0)
-        {
-            return flashes + DoStep(data, steps);
-        }
-
-        return flashes;
-
+        return (flashes, data);
     }
 
     public IEnumerable<(int, int)> Neighbours(int originY, int originX, int boundsY, int boundsX)
@@ -116,8 +131,5 @@ class Day11
 
         }
     }
-    public long Part2(int[,] data)
-    {
-        return 0;
-    }
+
 }
