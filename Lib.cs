@@ -34,5 +34,24 @@ public static class Lib
         return l;
     }
 
+    public static int[,] LoadMatrix(string path)
+    {
+        var data = Lib.LoadFile(path);
+
+        int[,] numbers = new int[data.Count(), data[0].Count()];
+        var current_row = 0;
+        var current_column = 0;
+        foreach (var line in data)
+        {
+            foreach (var c in line)
+            {
+                numbers[current_row, current_column] = int.Parse(c.ToString());
+                current_column++;
+            }
+            current_row++;
+            current_column = 0;
+        }
+        return numbers;
+    }
 
 }

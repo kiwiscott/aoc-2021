@@ -4,25 +4,7 @@ class Day9
 {
     public int[,] Data(string path)
     {
-        var data = Lib.LoadFile(path);
-        Console.WriteLine("GRID == {0},{1}", data.Count(), data[0].Count());
-
-
-
-        int[,] numbers = new int[data.Count(), data[0].Count()];
-        var current_row = 0;
-        var current_column = 0;
-        foreach (var line in data)
-        {
-            foreach (var c in line)
-            {
-                numbers[current_row, current_column] = int.Parse(c.ToString());
-                current_column++;
-            }
-            current_row++;
-            current_column = 0;
-        }
-        return numbers;
+        return  Lib.LoadMatrix(path);
     }
     public int Part1(int[,] data)
     {
