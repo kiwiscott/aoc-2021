@@ -67,38 +67,44 @@ class Day14
 
     private Dictionary<char, long> PairFactor(char left, char right, int process_multiplier)
     {
+        //Basically just create an inner function to return the result and use a cache. Think memotization 
+        var f = (char l, char r, int process_count) =>
+        {
+            Dictionary<char, long> result = new Dictionary<char, long>();
+
+            if (process_multiplier == 0)
+            {
+                return result;
+            }
+            //if there's no matched rules 
+            var middle = char.MaxValue;
+            if (!this.rules.TryGetValue(left.ToString() + right.ToString(), out middle))
+                return result;
+
+            var new_process_multiplier = process_multiplier - 1;
+
+            result[middle] = result.GetValueOrDefault(middle) + 1;
+
+            //can't do a 
+            foreach (var left_result in PairFactor(left, middle, new_process_multiplier))
+                result[left_result.Key] = result.GetValueOrDefault(left_result.Key) + left_result.Value;
+
+            foreach (var right_result in PairFactor(middle, right, new_process_multiplier))
+                result[right_result.Key] = result.GetValueOrDefault(right_result.Key) + right_result.Value;
+
+            return result;
+        };
+
+
+        //this is ugly but I don't care 
         var cache_key = (left, right, process_multiplier);
 
 
-        if (cache.ContainsKey(cache_key))
+        if (!cache.ContainsKey(cache_key))
         {
-            return cache[cache_key];
+            cache.Add(cache_key, f(left, right, process_multiplier - 1));
         }
 
-        Dictionary<char, long> result = new Dictionary<char, long>();
-
-        if (process_multiplier == 0)
-        {
-            return result;
-        }
-        //if there's no matched rules 
-        var middle = char.MaxValue;
-        if (!this.rules.TryGetValue(left.ToString() + right.ToString(), out middle))
-            return result;
-
-        var new_process_multiplier = process_multiplier - 1;
-
-        result[middle] = result.GetValueOrDefault(middle) + 1;
-
-        //can't do a 
-        foreach (var left_result in PairFactor(left, middle, new_process_multiplier))
-            result[left_result.Key] = result.GetValueOrDefault(left_result.Key) + left_result.Value;
-
-        foreach (var right_result in PairFactor(middle, right, new_process_multiplier))
-            result[right_result.Key] = result.GetValueOrDefault(right_result.Key) + right_result.Value;
-
-
-        cache.Add(cache_key, result);
-        return result;
+        return cache[cache_key];
     }
 }
