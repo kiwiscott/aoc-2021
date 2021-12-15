@@ -40,8 +40,6 @@ class Day13
 
         Console.WriteLine("----------------------------------------");
 
-
-
         for (int y = 0; y <= max_y; y++)
         {
             for (int x = 0; x <= max_x; x++)

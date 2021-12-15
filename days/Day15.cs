@@ -1,9 +1,11 @@
 namespace aoc.Days;
 
+using Point = Tuple<int, int>;
+
+//CS8600
+
 class Day15
 {
-    public readonly record struct Point(int y, int x);
-
     public int[,] Data(string path)
     {
         return Lib.LoadMatrix(path);
@@ -11,87 +13,119 @@ class Day15
     public int Part1(int[,] data)
     {
         return ShortestPath(data,
-            (0, 0),
-            (data.GetUpperBound(0), data.GetUpperBound(1)) 
+            new Point(0, 0),
+            new Point(data.GetUpperBound(0), data.GetUpperBound(1))
         );
 
     }
     public int Part2(int[,] data)
     {
-        return 0;
+        //big a bloody big grid 
+        int[,] bigGrid = new int[(1 + data.GetUpperBound(0)) * 5, (1 + data.GetUpperBound(1)) * 5];
 
-    }
-    public IEnumerable<(int, int)> Neighbours(int originY, int originX, int boundsY, int boundsX)
-    {
-        if (originY - 1 >= 0) yield return (originY - 1, originX);
-        if (originY + 1 < boundsY) yield return (originY + 1, originX);
-
-        if (originX - 1 >= 0) yield return (originY, originX - 1);
-        if (originX + 1 < boundsX) yield return (originY, originX + 1);
-    }
-
-    /*
-    def dijkstra_search(graph: WeightedGraph, start: Location, goal: Location):
-    frontier = PriorityQueue()
-    frontier.put(start, 0)
-    came_from: Dict[Location, Optional[Location]] = {}
-    cost_so_far: Dict[Location, float] = {}
-    came_from[start] = None
-    cost_so_far[start] = 0
-    
-    while not frontier.empty():
-        current: Location = frontier.get()
-        
-        if current == goal:
-            break
-        
-        for next in graph.neighbors(current):
-            new_cost = cost_so_far[current] + graph.cost(current, next)
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                cost_so_far[next] = new_cost
-                priority = new_cost
-                frontier.put(next, priority)
-                came_from[next] = current
-    
-    return came_from, cost_so_far
-
-    */
-
-    int ShortestPath(int[,] grid, (int, int) start, (int, int) goal)
-    {
-        Dictionary<(int, int), int> costs = new Dictionary<(int, int), int>();
-        Dictionary<(int, int), (int, int)> came_from = new Dictionary<(int, int), (int, int)>();
-        Stack<((int, int), int)> toProcess = new Stack<((int, int), int)>();
-        int min_cost = int.MaxValue;
-
-        toProcess.Push((start, 0));
-        costs[start] = 0;
-
-        while (toProcess.Any())
+        for (int y = 0; y <= bigGrid.GetUpperBound(0); y++)
         {
-            //Console.WriteLine("CCCCCCCCCCCCCCCCCCCCC");
-            var (current, cost) = toProcess.Pop();
-
-            if(cost > min_cost) continue; 
-
-            if (current == goal)
+            for (int x = 0; x <= bigGrid.GetUpperBound(1); x++)
             {
-                min_cost = cost; 
+                if (x <= data.GetUpperBound(1) && y <= data.GetUpperBound(0))
+                {
+                    bigGrid[y, x] = data[y, x];
+                }
+                else if (y <= data.GetUpperBound(0))
+                {
+                    //Look Left 
+                    var v = bigGrid[y, x - data.GetUpperBound(1) - 1] + 1;
+                    bigGrid[y, x] = v > 9 ? 1 : v;
+                }
+                else
+                {
+                    //Look Up 
+                    var v = bigGrid[y - data.GetUpperBound(0) - 1, x] + 1;
+                    bigGrid[y, x] = v > 9 ? 1 : v;
+                }
+
+            }
+        }
+        return ShortestPath(bigGrid,
+                    new Point(0, 0),
+                    new Point(bigGrid.GetUpperBound(0), bigGrid.GetUpperBound(1))
+                );
+
+    }
+    void Print(int[,] data)
+    {
+        Console.Write(System.Environment.NewLine);
+        Console.WriteLine("----STEP----");
+
+        for (int y = 0; y < data.GetLength(0); y++)
+        {
+            for (int x = 0; x < data.GetLength(1); x++)
+            {
+                Console.Write(data[y, x]);
+            }
+            Console.Write(System.Environment.NewLine);
+        }
+    }
+
+    public IEnumerable<Point> Neighbours(Point origin, Point bounds)
+    {
+        var (y, x) = origin;
+
+        if (x - 1 >= 0) yield return new Point(y, x - 1);
+        if (y - 1 >= 0) yield return new Point(y - 1, x);
+
+        if (x + 1 <= bounds.Item2) yield return new Point(y, x + 1);
+        if (y + 1 <= bounds.Item1) yield return new Point(y + 1, x);
+    }
+
+    int ShortestPath(int[,] grid, Point start, Point goal)
+    {
+        var grid_bounds = new Point(grid.GetUpperBound(0), grid.GetUpperBound(1));
+
+        var toProcess = new PriorityQueue<(Point, int), int>();
+        toProcess.Enqueue((start, 0), 1);
+
+        int[,] costs = new int[grid_bounds.Item1 + 1, grid_bounds.Item2 + 1];
+        for (int y = 0; y <= grid_bounds.Item1; y++)
+        {
+            for (int x = 0; x <= grid_bounds.Item2; x++)
+            {
+                costs.SetValue(int.MaxValue, y, x);
+            }
+        }
+
+        costs.SetValue(0, 0, 0);
+
+        int min_matching_value = int.MaxValue;
+
+        while (toProcess.TryDequeue(out var next_item, out var i))
+        {
+            var (current, cost) = next_item;
+
+            if (current.Item1 == goal.Item1 && current.Item2 == goal.Item2)
+            {
+                min_matching_value = cost;
             }
 
-            foreach (var new_point in Neighbours(current.Item1, current.Item2, grid.GetLength(0), grid.GetLength(1)))
-            {
-                var new_cost = cost + grid[current.Item1, current.Item2];
-                if (!costs.ContainsKey(new_point) || new_cost < costs[new_point])
-                {
-                    //Console.WriteLine("{0},{1}-{2}", new_point.Item1, new_point.Item2, cost);
+            if (cost > min_matching_value) continue;
 
-                    costs[new_point] = new_cost;
-                    toProcess.Push((new_point, new_cost));
-                    came_from[new_point] = current;
+            foreach (var next in Neighbours(current, grid_bounds))
+            {
+                var new_cost = cost + grid[next.Item1, next.Item2];
+
+                if (new_cost < costs[next.Item1, next.Item2] && new_cost < min_matching_value)
+                {
+                    costs[next.Item1, next.Item2] = new_cost;
+
+                    //Use distance to process the nearest to the goal first 
+                    //This was a massive speed up 
+                    var priority = -1 * (goal.Item1 - next.Item1 + goal.Item2 - next.Item2);
+
+                    toProcess.Enqueue((next, new_cost), priority);
                 }
             }
         }
-        return costs[goal];
+
+        return min_matching_value;
     }
 }
