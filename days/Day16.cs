@@ -88,7 +88,7 @@ class Day16
                 }
             }
         }
-        catch (System.InvalidOperationException e)
+        catch (System.InvalidOperationException )
         {
             //We just swallow the end of chucking to deal with the hex challenges. 
             //Console.WriteLine("ERROR {0}", e.Message);
