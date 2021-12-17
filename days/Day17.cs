@@ -58,7 +58,7 @@ class Day17
         var pos = (0, 0);
         int max = int.MinValue;  
 
-        while (pos.Item1 < target_area.Item2 && pos.Item2 > target_area.Item4)
+        while (pos.Item1 <= target_area.Item2 && pos.Item2 >= target_area.Item3)
         {
             pos.Item1 += velocity.Item1;
             pos.Item2 += velocity.Item2;
