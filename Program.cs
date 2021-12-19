@@ -1,4 +1,6 @@
-﻿var (typeName, p1, p2) = ProcessArgs(args);
+﻿//var (typeName, p1, p2) = ProcessArgs(args);
+var (typeName, p1, p2) = ("aoc.Days.Day18",true,false); 
+
 
 if (typeName == "ALL")
 {
