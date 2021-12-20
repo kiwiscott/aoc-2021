@@ -27,10 +27,15 @@ public class Day19
         scanners.Add(scanner);
         return scanners;
     }
+    public int Diff(int number1, int number2){
+        int result = number1 > number2 ? number1 - number2 : number2 - number1;
+        return result;
+
+    }
 
     public long Part1(List<List<(int, int, int)>> scanners)
     {
-        List<List<float>> differences = new List<List<float>>();
+        var differences = new List<List<(float distance, (int, int, int) x, (int, int, int) y)>>(); 
 
         foreach (var scanner in scanners)
         {
@@ -38,23 +43,31 @@ public class Day19
                 .Where(p => p.x != p.y)
                 .Select(c =>
                 {
-                    float deltaX = c.x.Item1 - c.y.Item1;
-                    float deltaY = c.x.Item2 - c.y.Item2;
-                    float deltaZ = c.x.Item3 - c.y.Item3;
+                    float deltaX = Diff( c.x.Item1 , c.y.Item1);
+                    float deltaY = Diff(c.x.Item2 , c.y.Item2);
+                    float deltaZ = Diff(c.x.Item3 , c.y.Item3);
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-                    return distance;
+                    return (distance, c.x, c.y);
                 });
-            differences.Add(query.Distinct().ToList());
+            differences.Add(query.DistinctBy(c=> c.distance).ToList());
         }
+
+        //we've got a distance and the coordinates x and y 
         for (int i = 0; i < differences.Count; i++)
         {
             for (int j = i; j < differences.Count; j++)
             {
                 if (i == j) continue;
 
-                if (differences[i].Intersect(differences[j]).Count() >= 12)
+                // there a 66 relationships where 12 edges meet
+                // If I have 66 matches I should be able to figure out the distance we have to move 
+                // Not sure how we calaculate rotations yet but the 24 is daunting 
+
+                if (differences[i].Intersect(differences[j]).Count() >= 66) 
                 {
                     Console.WriteLine("{0}>{1} [{2} MATCHES]", i, j, differences[i].Intersect(differences[j]).Count());
+
+
 
                 }
             }
