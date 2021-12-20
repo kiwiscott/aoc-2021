@@ -2,30 +2,45 @@ namespace aoc.Days;
 public class Day18
 {
 
-    public List<string> Data(string path)
+    public List<Tree> Data(string path)
     {
-        return Lib.LoadFile(path);
+        return Lib.LoadList(path, s => Tree.From(s));
     }
 
-    public long Part1(List<string> homework)
+    public long Part1(List<Tree> homework)
     {
-        var f = "[[6,[5,[4,[3,2]]]],1]"; 
 
+        var t = homework.First();
+        foreach (var to_add in homework.Skip(1))
+        {
+            t = t.Add(to_add);
+        }
 
-        var t = aoc.Days.Day18.Tree.From(null, f);
-        t.Reduce(); 
-        Console.WriteLine(t.ToString());
-        return 99;
+        return t.Magnitude();
     }
 
-    public long Part2(List<string> homework)
+    public long Part2(List<Tree> homework)
     {
-        return -9;
+        var query = from x in homework
+                    from y in homework
+                    where x.ToString() != y.ToString()
+                    select (x.ToString(), y.ToString());
+
+        int max = query.Select(p =>
+        {
+            var t = Tree.From(p.Item1);
+            var t2 = Tree.From(p.Item2);
+            return t2.Add(t).Magnitude();
+
+        }).Max();
+
+        return max;
     }
+
 
     public class Tree
     {
-        public int index = 0; 
+        public int Index = 0;
         public Tree? Left { get; private set; }
         Tree? Parent { get; set; }
 
@@ -44,7 +59,49 @@ public class Day18
             if (this.Left is not null)
                 this.Left.Parent = this;
         }
-        public static Tree From(Tree? parent, string from)
+        public static Tree From(string from)
+        {
+            var root = From(null, from);
+            root.Reindex();
+            return root;
+        }
+
+        private void Reindex()
+        {
+            int index = 0;
+            foreach (var n in this.Root.IndexTree())
+            {
+                index++;
+                n.Index = index;
+            }
+
+        }
+
+        private IEnumerable<Tree> IndexTree()
+        {
+            if (this.Left != null)
+            {
+                foreach (var n in this.Left.IndexTree())
+                {
+                    yield return n;
+                }
+
+            }
+
+            yield return this;
+
+            if (this.Right != null)
+            {
+                foreach (var n in this.Right.IndexTree())
+                {
+                    yield return n;
+                }
+            }
+
+
+        }
+
+        private static Tree From(Tree? parent, string from)
         {
             int value = 0;
             if (int.TryParse(from, out value))
@@ -92,85 +149,82 @@ public class Day18
         internal Tree Add(Tree t2)
         {
             var _t = new Tree(null, null, this, t2);
-            _t.Reduce(0);
-            _t.Root.CheckEmpty(); 
-             
+            _t.Reindex();
+            _t.Reduce();
             return _t;
         }
         public void CheckEmpty()
         {
-            Console.WriteLine(this.ToString());
-            Console.WriteLine("LEFT {0}", this.Left == null ? "-" : this.Left.IsEmpty() );
-            Console.WriteLine("RIGH {0}", this.Right == null ? "-" : this.Right.IsEmpty() );
-
-            if(this.Left != null)
+            if (this.Left != null)
             {
-                this.Left.CheckEmpty(); 
+                this.Left.CheckEmpty();
                 if (this.Left.IsEmpty())
-                    this.Left = null; 
+                    this.Left = null;
             }
-             if(this.Right != null)
+            if (this.Right != null)
             {
-                this.Right.CheckEmpty(); 
+                this.Right.CheckEmpty();
                 if (this.Right.IsEmpty())
-                    this.Right = null; 
+                    this.Right = null;
             }
 
-            if(this.Left is not null&& this.Right is null )
+            if (this.Left is not null && this.Right is null)
             {
-                this.Right = new Tree(0,this,null,null);
+                this.Right = new Tree(0, this, null, null);
             }
-            if(this.Right is not  null && this.Left is null )
+            if (this.Right is not null && this.Left is null)
             {
-                this.Left = new Tree(0,this,null,null);
+                this.Left = new Tree(0, this, null, null);
             }
 
 
         }
-        public bool IsEmpty(){
-            return this.Left is null 
+        public bool IsEmpty()
+        {
+            return this.Left is null
                 && this.Right is null
                 && !this.Value.HasValue;
         }
 
         public Tree Root
         {
-            get{
-                var r = this; 
-                while(r.Parent is not null)
+            get
+            {
+                var r = this;
+                while (r.Parent is not null)
                 {
-                    r = r.Parent; 
+                    r = r.Parent;
                 }
-                return r; 
+                return r;
             }
 
         }
 
 
-        public bool Explode(TreeSide side, int toset, int level)
+        public bool Explode(TreeSide side, int toset, int sourceIndex)
         {
-            if (side == TreeSide.Left && this.Left is not null && this.Left.Value.HasValue)
-            {
-                this.Left.Value = this.Left.Value + toset;
-                return true;
-            }
-            if (side == TreeSide.Left 
-                && this.Right is not null 
-                && this.Left.Value.HasValue)
-            {
-                this.Left.Value = this.Left.Value + toset;
-                return true;
-            }
+            Func<int, bool> test = (side == TreeSide.Left)
+                        ? (index) => { return index < sourceIndex; }
+            : (index) => { return index > sourceIndex; };
 
-
-            if (side == TreeSide.Right && this.Right is not null && this.Right.Value.HasValue)
+            //Check Left or Right if the indexs are okay 
+            if (side == TreeSide.Left)
             {
-                this.Right.Value = this.Right.Value + toset;
-                return true;
+                var lefts = this.Root.IndexTree().Where(n => n.Index < sourceIndex && n.Value.HasValue).OrderBy(n => n.Index);
+                if (lefts.Any())
+                {
+                    lefts.Last().Value += toset;
+                    return true;
+                }
             }
-            if (this.Parent != null)
+            else if (side == TreeSide.Right)
             {
-                return this.Parent.Explode(side, toset,level+1);
+                var rights = this.Root.IndexTree().Where(n => n.Index > sourceIndex && n.Value.HasValue).OrderBy(n => n.Index);
+                if (rights.Any())
+                {
+                    rights.First().Value += toset;
+                    return true;
+                }
             }
             return false;
         }
@@ -178,45 +232,86 @@ public class Day18
         public void Reduce()
         {
             var r = this.Root;
-            r.Reduce(0); 
-            r.CheckEmpty(); 
+            var run = true;
+            while (run)
+            {
+                run = r.Reduce(0);
+                if (!run)
+                {
+                    run = r.Split();
+                }
+                r.CheckEmpty();
+                r.Reindex();
+            }
+        }
+        private bool Split()
+        {
+            var split = this.Root.IndexTree().Where(n => n.Value.HasValue && n.Value >= 10).OrderBy(p => p.Index);
+            if (split.Any())
+            {
 
+                var to_split = split.First();
+
+                int val_to_split = to_split.Value.GetValueOrDefault();
+                to_split.Value = null;
+                int vl = (int)Math.Floor(val_to_split / 2.0);
+                int vr = (int)Math.Ceiling(val_to_split / 2.0);
+
+                to_split.Left = new Tree(vl, to_split, null, null);
+                to_split.Right = new Tree(vr, to_split, null, null);
+                return true;
+            }
+            return false;
         }
 
-        private void Reduce(int depth)
+        private bool Reduce(int depth)
         {
-            if (depth == 4
-             && this.Left is not null
-             && this.Right is not null
-                && this.Left.Value.HasValue
-                && this.Right.Value.HasValue)
+            if (depth == 4 && this.Left is not null && this.Right is not null && this.Left.Value.HasValue && this.Right.Value.HasValue)
             {
-                int tosetl = this.Left.Value.GetValueOrDefault();
-                int tosetr = this.Right.Value.GetValueOrDefault();
+                //Console.WriteLine("EXPLODE MY CHILREN : Reduce called {0} {1}", depth, this.ToString());
+
+
+                if (!this.Explode(TreeSide.Left, this.Left.Value.Value, this.Left.Index))
+                    this.Value = 0;
+
+                if (!this.Explode(TreeSide.Right, this.Right.Value.Value, this.Right.Index))
+                    this.Value = 0;
 
                 this.Left.Value = null;
                 this.Right.Value = null;
-
-
-                if (!this.Explode(TreeSide.Left, tosetl,0))
-                    this.Value = 0;
-
-                if (! this.Explode(TreeSide.Right,tosetr,0))
-                    this.Value = 0; 
-
-                Console.WriteLine("EXPLODE MY CHILREN : Reduce called {0} {1}", depth, this.ToString());
+                return true;
 
             }
 
             if (this.Left != null)
             {
-                this.Left.Reduce(depth + 1);
+                var t = this.Left.Reduce(depth + 1);
+                if (t)
+                    return true;
 
             }
             if (this.Right != null)
             {
-                this.Right.Reduce(depth + 1);
+                var t = this.Right.Reduce(depth + 1);
+                if (t)
+                    return true;
             }
+            return false;
+        }
+
+        public int Magnitude()
+        {
+            /*
+        To check whether it's the right answer, the snailfish teacher only checks the magnitude of the final sum.
+        The magnitude of a pair is 3 times the magnitude of its left element plus 2 times the magnitude of its right element. 
+        The magnitude of a regular number is just that number.
+        For example, the magnitude of [9,1] is 3*9 + 2*1 = 29; the magnitude of [1,9] is 3*1 + 2*9 = 21. 
+        Magnitude calculations are recursive: the magnitude of [[9,1],[1,9]] is 3*29 + 2*21 = 129.
+        */
+            if (this.Value.HasValue)
+                return this.Value.GetValueOrDefault();
+
+            return (this.Left.Magnitude() * 3) + (this.Right.Magnitude() * 2);
         }
     }
 }

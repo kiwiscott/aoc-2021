@@ -12,7 +12,7 @@ public class Day18
     [InlineData("[7,[6,[5,[4,[3,2]]]]]", "[7,[6,[5,[7,0]]]]")]
     public void Reduced(string tree, string expected)
     {
-        var t = aoc.Days.Day18.Tree.From(null, tree);
+        var t = aoc.Days.Day18.Tree.From(tree);
         t.Reduce();
         Assert.Equal(expected, t.ToString());
     }
@@ -21,11 +21,12 @@ public class Day18
     public void DoubleReduce()
     {
         var f = "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]";
-        var ex = "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]";
-                
-        var t = aoc.Days.Day18.Tree.From(null, f);
+        //var ex = "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]";
+        var ex2 = "[[3,[2,[8,0]]],[9,[5,[7,0]]]]";
+
+        var t = aoc.Days.Day18.Tree.From(f);
         t.Reduce();
-        Assert.Equal(ex, t.ToString());
+        Assert.Equal(ex2, t.ToString());
 
     }
     [Fact]
@@ -33,8 +34,8 @@ public class Day18
     {
         var f = "[1,2]";
         var f2 = "[[3,4],5]";
-        var t = aoc.Days.Day18.Tree.From(null, f);
-        var t2 = aoc.Days.Day18.Tree.From(null, f2);
+        var t = aoc.Days.Day18.Tree.From(f);
+        var t2 = aoc.Days.Day18.Tree.From(f2);
 
         var t_summed = t.Add(t2);
 
@@ -54,7 +55,7 @@ public class Day18
     [InlineData("[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]")]
     public void Validate(string tree)
     {
-        var t = aoc.Days.Day18.Tree.From(null, tree);
+        var t = aoc.Days.Day18.Tree.From(tree);
         Assert.Equal(tree, t.ToString());
 
     }
@@ -64,7 +65,7 @@ public class Day18
     public void SimplePair()
     {
         string f = "[1,2]";
-        var t = aoc.Days.Day18.Tree.From(null, f);
+        var t = aoc.Days.Day18.Tree.From(f);
         Assert.NotNull(t);
         Assert.Null(t.Value);
         Assert.NotNull(t.Left);
@@ -79,7 +80,7 @@ public class Day18
     public void NestedLeft()
     {
         string f = "[[1,2],3]";
-        var t = aoc.Days.Day18.Tree.From(null, f);
+        var t = aoc.Days.Day18.Tree.From(f);
         Assert.NotNull(t);
         Assert.Null(t.Value);
         Assert.NotNull(t.Left);
