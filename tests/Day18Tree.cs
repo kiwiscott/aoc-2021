@@ -1,6 +1,8 @@
 using Xunit;
 using aoc.Days;
 
+#pragma warning disable 8602
+
 public class Day18Tree
 {
     [Fact]
@@ -87,6 +89,5 @@ public class Day18Tree
         Assert.Equal(f, t.ToString());
     }
 }
-
-
+#pragma warning restore
 

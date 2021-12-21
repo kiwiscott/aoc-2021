@@ -1,6 +1,9 @@
 using Xunit;
 using aoc.Days;
 
+
+#pragma warning disable 8602
+
 public class Day18
 {
 
@@ -64,6 +67,7 @@ public class Day18
     [Fact]
     public void SimplePair()
     {
+
         string f = "[1,2]";
         var t = aoc.Days.Day18.Tree.From(f);
         Assert.NotNull(t);
@@ -74,6 +78,7 @@ public class Day18
         Assert.NotNull(t.Right);
         Assert.Equal(2, t.Right.Value);
         Assert.Equal(f, t.ToString());
+
     }
 
     [Fact]
@@ -88,7 +93,9 @@ public class Day18
         Assert.Equal(3, t.Right.Value);
         Assert.Equal(f, t.ToString());
     }
+
 }
+#pragma warning restore
 
 
 

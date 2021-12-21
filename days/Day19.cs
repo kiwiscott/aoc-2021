@@ -118,6 +118,8 @@ public class Day19
         }
         public IEnumerable<Coord> Beacons()
         {
+
+#pragma warning disable 1717
             Coord rotate(int rotation, Coord coord)
             {
                 var (x, y, z) = coord;
@@ -144,6 +146,7 @@ public class Day19
 
                 return new Coord(x, y, z);
             }
+#pragma warning restore
 
             int rot = this.rotation;
 

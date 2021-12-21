@@ -142,7 +142,9 @@ public class Day18
         public override string ToString()
         {
             if (this.Value.HasValue)
-                return this.Value.ToString();
+            {
+                return this.Value.GetValueOrDefault().ToString();
+            }
             return String.Format("[{0},{1}]", this.Left, this.Right);
         }
 
@@ -308,10 +310,15 @@ public class Day18
         For example, the magnitude of [9,1] is 3*9 + 2*1 = 29; the magnitude of [1,9] is 3*1 + 2*9 = 21. 
         Magnitude calculations are recursive: the magnitude of [[9,1],[1,9]] is 3*29 + 2*21 = 129.
         */
+#pragma warning disable 8602
             if (this.Value.HasValue)
+            {
                 return this.Value.GetValueOrDefault();
+            }
 
             return (this.Left.Magnitude() * 3) + (this.Right.Magnitude() * 2);
+#pragma warning restore
+
         }
     }
 }
