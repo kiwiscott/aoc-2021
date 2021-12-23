@@ -1,5 +1,4 @@
-﻿//var (typeName, p1, p2) = ProcessArgs(args);
-var (typeName, p1, p2) = ("aoc.Days.Day22", false, true);
+﻿var (typeName, p1, p2) = ProcessArgs(args);
 
 
 if (typeName == "ALL")
@@ -76,7 +75,6 @@ static bool RunMethod(string type, string method, bool silent = false)
     }
     else
     {
-
         Console.WriteLine("{0}: Missing Data Function", t.Name);
         return false;
     }
