@@ -1,0 +1,52 @@
+
+
+a.Push(A + 6)
+a.Push(B + 6)
+a.Push(C + 3)
+
+if D != z.pop() - 11:
+    z.push(D + 11)
+
+a.Push(E + 9)
+
+if F != z.pop() - 1:
+    z.push(F + 3)
+
+a.Push(G + 13)
+a.Push(H + 6)
+a.Push(I + 14)
+a.Push(J + 10)
+
+if K != z.pop() - 5:
+    z.push(K + 12)
+
+if L != z.pop() - 16:
+    z.push(K + 10)
+
+if M != z.pop() - 7:
+    z.push(M + 11)
+
+if N != z.pop() - 11:
+    z.push(N + 15)
+
+
+
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 15
+mul y x
+add z y
