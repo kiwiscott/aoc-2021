@@ -282,14 +282,14 @@ public class Day23
 
             foreach (var (from, to) in movement_in_room)
             {
+                if (_state[to] != EMPTY || _state[from] == EMPTY)
+                    continue;
+
                 // We need to make sure nothing under this 
-
-
-                if ((_state[from] == ORGANISED[from] && !under_needs_to_change(from)) || _state[from] == EMPTY)
+                if (_state[from] == ORGANISED[from] && !under_needs_to_change(from))
                     continue; // We are were we are supposed to be 
 
-                if (_state[to] == EMPTY)
-                    yield return CreateAndMove(from, to, 1);
+                yield return CreateAndMove(from, to, 1);
             }
 
             //move from top to lower in room if lower is target position and empty
