@@ -26,6 +26,7 @@ public class Day23
 
     public long Part1(Game game)
     {
+        return 12;
         long min_cost = long.MaxValue;
 
         Dictionary<string, long> seen = new Dictionary<string, long>();
@@ -73,8 +74,15 @@ public class Day23
     }
     public long Part2(Game game)
     {
+
         var state = "...........CDDBBCBDDBAAAACC";
+
+
+
+
         Game4 g4 = new Game4(state, 0, String.Empty);
+
+        Print(g4);
 
         long min_cost = long.MaxValue;
 
@@ -83,8 +91,11 @@ public class Day23
 
         to_process.Enqueue(g4, 0);
 
+        int count = 0;
+
         while (to_process.TryDequeue(out var g, out var i))
         {
+            count++;
             var seen_value = seen.GetValueOrDefault(g.State, long.MaxValue);
             if (g.Cost > min_cost || g.Cost > seen_value)
             {
@@ -98,9 +109,11 @@ public class Day23
 
                 foreach (var ng in g.PossibleMoves())
                 {
+
                     if (ng.Cost < min_cost && ng.Organized())
                     {
-                        Console.WriteLine(ng.Cost.ToString() + " " + ng.History);
+                        Console.WriteLine(ng.Cost);
+
                         min_cost = ng.Cost;
                     }
                     else if (ng.Cost < min_cost)
@@ -108,6 +121,16 @@ public class Day23
                         seen_value = seen.GetValueOrDefault(ng.State, long.MaxValue);
                         if (ng.Cost < seen_value)
                         {
+                            //if (ng.History.Contains("A.19->1")
+                            //&& ng.State[5] == 'B'
+                            //&& ng.State[11] == 'B' && ng.State[22] == 'C' && ng.State[21] == 'C' && ng.State[20] == 'C')
+                            //if (ng.State[3] == 'B' && ng.State[11] == 'B')
+                            //{
+                            //    Print(ng);
+                            //    Console.WriteLine(ng.History);
+                            //}
+
+
                             seen.TryAdd(ng.State, 0);
                             seen[ng.State] = ng.Cost;
 
@@ -117,8 +140,21 @@ public class Day23
                 }
             }
         }
-
         return min_cost;
+    }
+
+    public void Print(Game4 g)
+    {
+        Console.WriteLine("#############");
+        Console.WriteLine("#{0}#", g.State.Substring(0, 11));
+        Console.WriteLine("###{0}#{1}#{2}#{3}###", g.State[11], g.State[15], g.State[19], g.State[23]);
+        Console.WriteLine("  #{0}#{1}#{2}#{3}#", g.State[12], g.State[16], g.State[20], g.State[24]);
+        Console.WriteLine("  #{0}#{1}#{2}#{3}#", g.State[13], g.State[17], g.State[21], g.State[25]);
+        Console.WriteLine("  #{0}#{1}#{2}#{3}#", g.State[14], g.State[18], g.State[22], g.State[26]);
+        Console.WriteLine("  #########");
+        Console.WriteLine("");
+
+
     }
 
     public class Game4
@@ -182,6 +218,58 @@ public class Day23
             }
         }
 
+        public bool under_needs_to_change(int from)
+        {
+            var change = false;
+
+            switch (from)
+            {
+                case 11:
+                    change = !_state[12..14].All(p => p == ORGANISED[from]); break;
+                case 12:
+                    change = !_state[13..14].All(p => p == ORGANISED[from]); break;
+                case 13:
+                    change = _state[from] != ORGANISED[from]; break;
+                case 14:
+                    change = false; break;
+                //B
+                case 15:
+                    change = !_state[16..18].All(p => p == ORGANISED[from]); break;
+                case 16:
+                    change = !_state[17..18].All(p => p == ORGANISED[from]); break;
+                case 17:
+                    change = _state[18] != ORGANISED[from]; break;
+                case 18:
+                    change = false; break;
+                //C 
+                case 19:
+                    change = !_state[20..22].All(p => p == ORGANISED[from]); break;
+                case 20:
+                    change = !_state[21..22].All(p => p == ORGANISED[from]); break;
+                case 21:
+                    change = _state[22] != ORGANISED[from]; break;
+                case 22:
+                    change = false; break;
+                //D
+                case 23:
+                    change = !_state[24..26].All(p => p == ORGANISED[from]); break;
+                case 24:
+                    change = !_state[25..26].All(p => p == ORGANISED[from]); break;
+                case 25:
+                    change = _state[25] != ORGANISED[from]; break;
+                case 26:
+                    change = false; break;
+                default:
+                    change = false; break;
+            }
+
+            //if (from == 17)
+            // Console.WriteLine("under_needs_to_change:{0} == {1}", from, change);
+            return change;
+
+
+        }
+
         public IEnumerable<Game4> PossibleMoves()
         {
             //move from lower in room to top provided we're not in target position and top is empty.
@@ -194,7 +282,10 @@ public class Day23
 
             foreach (var (from, to) in movement_in_room)
             {
-                if (_state[from] == ORGANISED[from] || _state[from] == EMPTY)
+                // We need to make sure nothing under this 
+
+
+                if ((_state[from] == ORGANISED[from] && !under_needs_to_change(from)) || _state[from] == EMPTY)
                     continue; // We are were we are supposed to be 
 
                 if (_state[to] == EMPTY)
@@ -252,10 +343,15 @@ public class Day23
 
                     if (_state[top] == EMPTY && _state[stop] == ORGANISED[top] && NothingBetween(exclude_stop_char, entry))
                     {
-
-                        //################ WE NEED TO MAKE SURE NOTHING IS IN THE WAY HERE 
-                        var cost = Diff(entry, stop) + 1;
-                        yield return CreateAndMove(stop, top, cost);
+                        //The top item in the room we are moving to must be the same number. 
+                        if ((_state[top + 1] == EMPTY || _state[top + 1] == ORGANISED[top])
+                            && (_state[top + 2] == EMPTY || _state[top + 2] == ORGANISED[top])
+                            && (_state[top + 3] == EMPTY || _state[top + 3] == ORGANISED[top]))
+                        {
+                            //################ WE NEED TO MAKE SURE NOTHING IS IN THE WAY HERE 
+                            var cost = Diff(entry, stop) + 1;
+                            yield return CreateAndMove(stop, top, cost);
+                        }
                     }
                 }
             }
@@ -415,10 +511,13 @@ public class Day23
 
                     if (_state[top] == EMPTY && _state[stop] == ORGANISED[top] && NothingBetween(exclude_stop_char, entry))
                     {
+                        if (_state[top + 1] == EMPTY || _state[top + 1] == ORGANISED[top + 1])
+                        {
 
-                        //################ WE NEED TO MAKE SURE NOTHING IS IN THE WAY HERE 
-                        var cost = Diff(entry, stop) + 1;
-                        yield return CreateAndMove(stop, top, cost);
+                            //################ WE NEED TO MAKE SURE NOTHING IS IN THE WAY HERE 
+                            var cost = Diff(entry, stop) + 1;
+                            yield return CreateAndMove(stop, top, cost);
+                        }
                     }
                 }
             }
