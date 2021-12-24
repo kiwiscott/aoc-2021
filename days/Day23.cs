@@ -26,7 +26,6 @@ public class Day23
 
     public long Part1(Game game)
     {
-        return 12;
         long min_cost = long.MaxValue;
 
         Dictionary<string, long> seen = new Dictionary<string, long>();
@@ -112,8 +111,6 @@ public class Day23
 
                     if (ng.Cost < min_cost && ng.Organized())
                     {
-                        Console.WriteLine(ng.Cost);
-
                         min_cost = ng.Cost;
                     }
                     else if (ng.Cost < min_cost)
