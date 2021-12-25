@@ -32,45 +32,26 @@ public class Day25
         int count = 0;
         bool moved = true;
 
-        //Print(seabed);
-
         while (moved)
         {
-
             var right = MoveRight(seabed);
             var down = MoveDown(seabed);
             moved = right || down;
             count++;
-            
-
         }
-        //Print(seabed);
-
-
         return count+1;
     }
     public long Part2(char[,] seabed)
     {
-        return 14;
+        return -1;
     }
 
-    void Print(char[,] data)
-    {
-        Console.Write(System.Environment.NewLine);
-        Console.WriteLine("----STEP---- y:{0}, x:{1}", data.GetLength(0), data.GetLength(1));
-
-        for (int y = 0; y < data.GetLength(0); y++)
-        {
-            for (int x = 0; x < data.GetLength(1); x++)
-            {
-                Console.Write(data[y, x]);
-            }
-            Console.Write(System.Environment.NewLine);
-
-        }
-    }
     bool MoveRight(char[,] data)
     {
+        //We have to remember that we can't change the array as we process through it or else
+        //th tests return the results from the changed values. That the 'challenge' with using 
+        //ienumerable everywhere. Adding ToList in the second loop means the 'changes' loop is 
+        //end till the end before processing. 
         var newx = (int x) => { return ((x + 1 < data.GetLength(1)) ? x + 1 : 0); };
         var changes = from y in Enumerable.Range(0, data.GetLength(0))
                       from x in Enumerable.Range(0, data.GetLength(1))
